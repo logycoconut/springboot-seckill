@@ -3,7 +3,7 @@ package com.logycoco.seckill.test;
 import com.logycoco.seckill.MainApplication;
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.mapper.UserMapper;
-import com.logycoco.seckill.utils.RSAUtils;
+import com.logycoco.seckill.utils.RsaUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +35,6 @@ public class TestDemo {
         String pubKeyPath = "/Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pub";
         String priKeyPath = "/Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pri";
 
-        RSAUtils.generateKey(pubKeyPath, priKeyPath, "123456");
+        RsaUtils.generateKey(pubKeyPath, priKeyPath, "123456");
     }
 }

@@ -12,7 +12,11 @@ import java.security.spec.X509EncodedKeySpec;
  * @author hall
  * @date 2020-07-01 22:08
  */
-public class RSAUtils {
+public class RsaUtils {
+
+    private RsaUtils() {
+        throw new IllegalStateException("这是一个工具类");
+    }
 
     /**
      * 根据密文，生存rsa公钥和私钥,并写入指定文件
@@ -46,9 +50,6 @@ public class RSAUtils {
      */
     private static void writeFile(String fileName, byte[] bytes) throws IOException {
         File file = new File(fileName);
-//        if (!file.exists()) {
-//
-//        }
         Files.write(file.toPath(), bytes);
     }
 
@@ -90,6 +91,5 @@ public class RSAUtils {
         PKCS8EncodedKeySpec encPriKeySpec = new PKCS8EncodedKeySpec(bytes);
         return KeyFactory.getInstance("RSA").generatePrivate(encPriKeySpec);
     }
-
 
 }
