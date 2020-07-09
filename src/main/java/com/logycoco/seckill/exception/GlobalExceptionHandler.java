@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
         if (e instanceof GlobalException) {
             return Result.error(((GlobalException) e).getCodeMsg());
         } else {
-            return Result.error(CodeMsg.INTERNAL_SERVER_ERROR);
+            return Result.error(new CodeMsg(500, e.getMessage()));
         }
     }
 }

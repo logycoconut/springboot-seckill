@@ -18,5 +18,6 @@ public class CodeMsg {
     public static final CodeMsg BAD_REQUEST = new CodeMsg(400, "bad request");
     public static final CodeMsg INTERNAL_SERVER_ERROR = new CodeMsg(500, "server error");
     public static final CodeMsg KEY_INIT_ERROR = new CodeMsg(500001, "key init error");
+    public static final CodeMsg COOKIE_SET_ERROR = new CodeMsg(500002, "cookie set error");
 
 }

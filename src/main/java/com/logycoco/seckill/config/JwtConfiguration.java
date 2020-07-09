@@ -28,7 +28,7 @@ public class JwtConfiguration {
     private PrivateKey privateKey;
     private Integer expireTime;
     private String cookieName;
-    private String cookieTime;
+    private Integer cookieTime;
 
     /**
      * 初始化时获取密钥对
