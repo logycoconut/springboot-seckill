@@ -12,6 +12,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,4 +41,13 @@ public class TestDemo {
 
         RsaUtils.generateKey(pubKeyPath, priKeyPath, "123456");
     }
+
+    @Test
+    public void testLocalDateTime()  {
+        LocalDateTime date = LocalDateTime.now().plusMinutes(1);
+        Instant instant = date.atZone(ZoneId.systemDefault()).toInstant();
+        Date from = Date.from(instant);
+        System.out.println(from);
+    }
+
 }

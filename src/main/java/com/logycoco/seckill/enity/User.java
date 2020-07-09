@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.Date;
 
 /**
@@ -24,4 +23,9 @@ public class User {
     private Date registerDate;
     private Date lastLoginDate;
     private Integer loginCount;
+
+    public User(Long id, String nickname) {
+        this.id = id;
+        this.nickname = nickname;
+    }
 }

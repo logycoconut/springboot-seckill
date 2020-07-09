@@ -1,11 +1,13 @@
 package com.logycoco.seckill.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.logycoco.seckill.config.JwtConfiguration;
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.exception.GlobalException;
 import com.logycoco.seckill.mapper.UserMapper;
 import com.logycoco.seckill.response.CodeMsg;
 import com.logycoco.seckill.utils.CodecUtils;
+import com.logycoco.seckill.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -16,6 +18,9 @@ import org.springframework.util.Assert;
  */
 @Service
 public class UserService {
+
+    @Autowired
+    private JwtConfiguration jwtConfiguration;
 
     @Autowired
     private UserMapper userMapper;
@@ -38,7 +43,13 @@ public class UserService {
     }
 
 
-    public Boolean login(User user) {
+    /**
+     * 用户登录
+     *
+     * @param user 登录信息
+     * @return 成功登录返回token
+     */
+    public String login(User user) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("nickname", user.getNickname());
 
@@ -50,6 +61,7 @@ public class UserService {
         if (!resPassword.equals(loginPassword)) {
             throw new GlobalException(new CodeMsg(401, "登录失败"));
         }
-        return true;
+
+        return JwtUtils.generateToken(res, jwtConfiguration.getPrivateKey(), jwtConfiguration.getExpireTime());
     }
 }
