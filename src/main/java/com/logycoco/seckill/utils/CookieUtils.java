@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Arrays;
 
 /**
  * @author hall
@@ -49,6 +50,12 @@ public class CookieUtils {
         }
     }
 
+    /**
+     * 获取域名
+     *
+     * @param request 请求
+     * @return 域名
+     */
     private static String getDomain(HttpServletRequest request) {
         String serverName = request.getRequestURL().toString();
         serverName = serverName.substring(7, serverName.indexOf('/', 7));
@@ -58,5 +65,22 @@ public class CookieUtils {
         }
 
         return serverName;
+    }
+
+    /**
+     * 根据名字获取cookie值
+     *
+     * @param request    请求
+     * @param cookieName cookie名
+     * @return cookie值
+     */
+    public static String getCookieValue(HttpServletRequest request, String cookieName) {
+        Cookie[] cookies = request.getCookies();
+        Cookie filterCookie = Arrays.stream(cookies).filter(cookie -> cookieName.equals(cookie.getValue()))
+                .findAny().orElse(null);
+        if (filterCookie == null) {
+            throw new GlobalException(CodeMsg.COOKIE_FIND_ERROR);
+        }
+        return filterCookie.getValue();
     }
 }

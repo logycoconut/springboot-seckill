@@ -43,12 +43,13 @@ public class JwtUtils {
 
     /**
      * 公钥解析token获取用户信息
+     *
      * @param publicKey 公钥
-     * @param token token
+     * @param token     token
      * @return User
      */
     public static User parseToken(PublicKey publicKey, String token) {
         Claims claims = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(token).getBody();
-        return new User((Long)claims.get("id"), (String)claims.get("nickname"));
+        return new User((Long) claims.get("id"), (String) claims.get("nickname"));
     }
 }

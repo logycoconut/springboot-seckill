@@ -7,9 +7,8 @@ import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.service.UserService;
 import com.logycoco.seckill.utils.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +18,7 @@ import javax.validation.Valid;
  * @author hall
  * @date 2020-07-06 20:58
  */
-@RestController
+@Controller
 @RequestMapping("user")
 public class UserController {
 
@@ -30,6 +29,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("register")
+    @ResponseBody
     public Result<Void> register(@Valid User user) {
         Boolean boo = this.userService.register(user);
         if (Boolean.FALSE.equals(boo)) {
@@ -39,10 +39,16 @@ public class UserController {
     }
 
     @PostMapping("login")
+    @ResponseBody
     public Result<Void> login(@Valid User user, HttpServletRequest request, HttpServletResponse response) {
         String token = this.userService.login(user);
         CookieUtils.setCookie(request, response, jwtConfiguration.getCookieName(), token, jwtConfiguration.getCookieTime(), true);
         return Result.success(null);
+    }
+
+    @GetMapping("to_login")
+    public String toLogin() {
+        return "login";
     }
 
 }
