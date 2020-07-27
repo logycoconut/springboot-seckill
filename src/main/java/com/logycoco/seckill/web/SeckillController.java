@@ -4,6 +4,7 @@ import com.logycoco.seckill.response.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author hall
@@ -14,8 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SeckillController {
 
     @PostMapping("doSeckill")
-    public Result<Void> doSeckill() {
+    public Result<Void> doSeckill(@RequestParam String goodsId) {
 
+        // 请求入队
 
         return Result.success(null);
     }
