@@ -6,8 +6,6 @@ import com.logycoco.seckill.response.CodeMsg;
 import com.logycoco.seckill.utils.CookieUtils;
 import com.logycoco.seckill.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;

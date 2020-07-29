@@ -30,7 +30,7 @@ public class GoodsController {
 
     @GetMapping("detail/{id}")
     public String list(@PathVariable("id") String goodsId, Model model) {
-        GoodsVo goodsVo = this.goodsService.getGoodsVo(goodsId);
+        GoodsVo goodsVo = this.goodsService.getGoodsVo(Long.parseLong(goodsId));
         model.addAttribute("goods", goodsVo);
         //remainSeconds seckillStatus
         int remainSeconds = 0;

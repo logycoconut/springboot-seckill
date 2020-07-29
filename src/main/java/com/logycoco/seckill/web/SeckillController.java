@@ -17,7 +17,7 @@ public class SeckillController {
     @PostMapping("doSeckill")
     public Result<Void> doSeckill(@RequestParam String goodsId) {
 
-        // 请求入队
+        // TODO 请求入队
 
         return Result.success(null);
     }

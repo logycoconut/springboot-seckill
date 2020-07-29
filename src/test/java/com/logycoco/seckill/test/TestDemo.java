@@ -59,13 +59,15 @@ public class TestDemo {
 
     @Test
     public void testString() {
-        // http://localhost:8080/CarsiLogCenter_new/idpstat.jsp?action=idp.sptopn
 
-        String serverName = "http://localhost:8080/CarsiLogCenter_new/idpstat.jsp?action=idp.sptopn";
-
-        serverName = serverName.substring(7, serverName.indexOf("/", 7));
-//        int index = serverName.indexOf("/", 7);
-        System.out.println(serverName);
+        int[] prices = {7,1,5,3,6,4};
+        int res = 0;
+        for (int i = 0; i < prices.length - 1; i++) {
+            if (prices[i] < prices[i+1]) {
+                res += prices[i+1] - prices[i];
+            }
+        }
+        System.out.println(res);
     }
 
 }

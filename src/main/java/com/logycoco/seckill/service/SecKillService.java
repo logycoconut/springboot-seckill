@@ -1,13 +1,17 @@
 package com.logycoco.seckill.service;
 
+import com.logycoco.seckill.enity.OrderInfo;
 import com.logycoco.seckill.enity.User;
+import com.logycoco.seckill.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author hall
  * @date 2020-07-27 07:37
  */
+@Service
 public class SecKillService {
 
     @Autowired
@@ -18,14 +22,19 @@ public class SecKillService {
 
     /**
      * 减少库存并且创建订单
-     * @param user
-     * @param goodsId
+     *
+     * @param user  当前用户
+     * @param goods 商品信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public void doSecKill(User user, String goodsId) {
-        Boolean isSuccess = this.goodsService.reduceStock(goodsId);
+    public OrderInfo doSecKill(User user, GoodsVo goods) {
+        boolean isSuccess = this.goodsService.reduceStock(goods.getId());
         if (isSuccess) {
-            this
+            return this.orderService.createOrder(user, goods);
+        } else {
+            //TODO 在redis中标记售空
+
+            return null;
         }
     }
 
