@@ -3,14 +3,20 @@ server:
 spring:
   thymeleaf:
     cache: false
-  redis:
-    host: 47.96.146.241
-    port: 6380
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://47.96.146.241:3307/seckill?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
     username: root
     password: mysql
+  redis:
+    host: 47.96.146.241
+    port: 6380
+  rabbitmq:
+    host: 47.96.146.241
+    port: 5673
+    virtual-host: /
+    template:
+      exchange: sexkill.order.exchange2
 seckill:
   jwt:
     pubKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pub

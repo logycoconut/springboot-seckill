@@ -1,12 +1,18 @@
 package com.logycoco.seckill.test;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logycoco.seckill.MainApplication;
+import com.logycoco.seckill.dto.QueueMsg;
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.mapper.UserMapper;
 import com.logycoco.seckill.utils.RsaUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,8 +32,15 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 public class TestDemo {
+
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Test
     public void testSelect() {
@@ -58,16 +71,11 @@ public class TestDemo {
     }
 
     @Test
-    public void testString() {
+    public void testString() throws JsonProcessingException {
 
-        int[] prices = {7,1,5,3,6,4};
-        int res = 0;
-        for (int i = 0; i < prices.length - 1; i++) {
-            if (prices[i] < prices[i+1]) {
-                res += prices[i+1] - prices[i];
-            }
-        }
-        System.out.println(res);
+        QueueMsg msg = new QueueMsg(new User(1234L, "jackma"), "goodsId");
+        amqpTemplate.convertAndSend(new ObjectMapper().writeValueAsString(msg));
+    rabbitTemplate.convertAndSend("seckill.order.exchange2", "insert", new ObjectMapper().writeValueAsString(msg));
     }
 
 }
