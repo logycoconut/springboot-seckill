@@ -14,5 +14,5 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class QueueMsg {
     private User user;
-    private String goodsId;
+    private long goodsId;
 }

@@ -16,17 +16,13 @@ spring:
     port: 5673
     virtual-host: /
     template:
-      exchange: sexkill.order.exchange2
+      exchange: seckill.order.exchange
 seckill:
   jwt:
     pubKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pub
     priKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pri
     #    pubKeyPath: D:\Workspace\seckill\src\main\resources\rsa\rsa.pub
     #    priKeyPath: D:\Workspace\seckill\src\main\resources\rsa\rsa.pri
-
     expireTime: 2880  # 分钟
     cookieName: SK_TOKEN
     cookieTime: 86400  # 秒
-#  rabbitmq:
-#    host: 47.96.146.241
-#    port: 5673

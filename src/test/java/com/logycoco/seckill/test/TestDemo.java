@@ -8,6 +8,7 @@ import com.logycoco.seckill.MainApplication;
 import com.logycoco.seckill.dto.QueueMsg;
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.mapper.UserMapper;
+import com.logycoco.seckill.service.RedisService;
 import com.logycoco.seckill.utils.RsaUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +43,9 @@ public class TestDemo {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private RedisService redisService;
+
     @Test
     public void testSelect() {
         List<User> users = this.userMapper.selectList(null);
@@ -73,9 +77,8 @@ public class TestDemo {
     @Test
     public void testString() throws JsonProcessingException {
 
-        QueueMsg msg = new QueueMsg(new User(1234L, "jackma"), "goodsId");
-        amqpTemplate.convertAndSend(new ObjectMapper().writeValueAsString(msg));
-    rabbitTemplate.convertAndSend("seckill.order.exchange2", "insert", new ObjectMapper().writeValueAsString(msg));
+        QueueMsg msg = new QueueMsg(new User(1234L, "jackma"), 1211L);
+        rabbitTemplate.convertAndSend(new ObjectMapper().writeValueAsString(msg));
     }
 
 }
