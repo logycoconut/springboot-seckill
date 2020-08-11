@@ -10,5 +10,5 @@ public class SeckillKey extends BasePrefix {
         super(prefix);
     }
 
-    public static final SeckillKey soldOver = new SeckillKey("soldOver");
+    public static final SeckillKey SOLD_OVER = new SeckillKey("soldOver");
 }

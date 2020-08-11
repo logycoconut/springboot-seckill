@@ -1,13 +1,12 @@
 package com.logycoco.seckill.test;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.logycoco.seckill.MainApplication;
 import com.logycoco.seckill.dto.QueueMsg;
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.mapper.UserMapper;
+import com.logycoco.seckill.prefix.SeckillKey;
 import com.logycoco.seckill.service.RedisService;
 import com.logycoco.seckill.utils.RsaUtils;
 import org.junit.Test;
@@ -81,4 +80,12 @@ public class TestDemo {
         rabbitTemplate.convertAndSend(new ObjectMapper().writeValueAsString(msg));
     }
 
+    @Test
+    public void testRedis() {
+
+        this.redisService.set(SeckillKey.SOLD_OVER, String.valueOf(1225L), "见");
+        System.out.println(this.redisService.decr(SeckillKey.SOLD_OVER, String.valueOf(1225L)));
+//        Boolean flag = this.redisService.get(SeckillKey.SOLD_OVER, String.valueOf(1223L), Boolean.class);
+//        System.out.println(flag);
+    }
 }

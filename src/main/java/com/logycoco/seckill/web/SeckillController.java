@@ -1,7 +1,7 @@
 package com.logycoco.seckill.web;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logycoco.seckill.dto.QueueMsg;
 import com.logycoco.seckill.response.Result;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -19,17 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("seckill")
 public class SeckillController {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
     @Autowired
     private AmqpTemplate rabbitTemplate;
 
     @PostMapping("doSeckill")
-    public Result<Void> doSeckill(@RequestParam long goodsId) throws JsonProcessingException {
-
-        // TODO 请求入队
+    public Result<Void> doSeckill(@RequestParam long goodsId) {
         QueueMsg msg = new QueueMsg(null, goodsId);
-        rabbitTemplate.convertAndSend(MAPPER.writeValueAsString(msg));
+        rabbitTemplate.convertAndSend(JSON.toJSONString(msg));
 
         return Result.success(null);
     }

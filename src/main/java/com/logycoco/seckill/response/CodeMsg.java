@@ -21,5 +21,6 @@ public class CodeMsg {
     public static final CodeMsg KEY_INIT_ERROR = new CodeMsg(500001, "key init error");
     public static final CodeMsg COOKIE_SET_ERROR = new CodeMsg(500002, "cookie set error");
     public static final CodeMsg COOKIE_FIND_ERROR = new CodeMsg(500003, "cookie find error");
+    public static final CodeMsg REDIS_TYPE_ERROR = new CodeMsg(500004, "对错误的类型进行增减");
 
 }

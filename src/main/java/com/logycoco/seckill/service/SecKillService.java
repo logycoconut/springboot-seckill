@@ -35,8 +35,8 @@ public class SecKillService {
         if (isSuccess) {
             this.orderService.createOrder(user, goods);
         } else {
-            //TODO 在redis中标记售空
-            this.redisService.set(SeckillKey.soldOver, String.valueOf(goods.getId()), true);
+            // 标记商品售空
+            this.redisService.set(SeckillKey.SOLD_OVER, String.valueOf(goods.getId()), true);
         }
     }
 
