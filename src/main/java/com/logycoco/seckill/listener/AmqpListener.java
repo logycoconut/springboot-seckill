@@ -1,9 +1,7 @@
 package com.logycoco.seckill.listener;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSON;
 import com.logycoco.seckill.dto.QueueMsg;
-import com.logycoco.seckill.enity.OrderInfo;
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.service.GoodsService;
 import com.logycoco.seckill.service.SecKillService;
@@ -24,8 +22,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AmqpListener {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
     @Autowired
     private SecKillService secKillService;
 
@@ -36,16 +32,19 @@ public class AmqpListener {
      * 监听队列中的秒杀请求
      *
      * @param msg 用户信息以及商品Id
-     * @throws JsonProcessingException 字符串转对象失败
      */
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue("seckill.order.queue"),
             exchange = @Exchange("seckill.order.exchange")
     ))
-    public void listenSeckill(String msg) throws JsonProcessingException {
-        QueueMsg queueMsg = MAPPER.readValue(msg, QueueMsg.class);
+    public void listenSeckill(String msg) {
+        QueueMsg queueMsg = JSON.parseObject(msg, QueueMsg.class);
         User user = queueMsg.getUser();
         GoodsVo goodsVo = goodsService.getGoodsVo(queueMsg.getGoodsId());
+
+        if (goodsVo == null || user == null) {
+            return;
+        }
 
         secKillService.doSecKill(user, goodsVo);
     }

@@ -18,9 +18,10 @@ public class WebConfiguration implements WebMvcConfigurer {
         return new LoginInterceptor();
     }
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(loginInterceptor()).addPathPatterns("/**")
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //TODO 拦截静态资源存在问题
+        registry.addInterceptor(loginInterceptor()).addPathPatterns("/**");
 //                .excludePathPatterns("/", "/user/**", "classpath:/**");
-//    }
+    }
 }

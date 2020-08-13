@@ -1,5 +1,6 @@
 package com.logycoco.seckill.enity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import java.util.Date;
  */
 @Data
 @Builder
+@TableName("sk_order_info")
 public class OrderInfo {
     private Long id;
     private Long userId;

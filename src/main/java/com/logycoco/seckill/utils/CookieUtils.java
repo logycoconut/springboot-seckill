@@ -76,7 +76,7 @@ public class CookieUtils {
      */
     public static String getCookieValue(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
-        Cookie filterCookie = Arrays.stream(cookies).filter(cookie -> cookieName.equals(cookie.getValue()))
+        Cookie filterCookie = Arrays.stream(cookies).filter(cookie -> cookieName.equals(cookie.getName()))
                 .findAny().orElse(null);
         if (filterCookie == null) {
             throw new GlobalException(CodeMsg.COOKIE_FIND_ERROR);

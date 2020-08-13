@@ -3,6 +3,8 @@ package com.logycoco.seckill.web;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.logycoco.seckill.dto.QueueMsg;
+import com.logycoco.seckill.enity.User;
+import com.logycoco.seckill.interceptor.LoginInterceptor;
 import com.logycoco.seckill.response.Result;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,8 @@ public class SeckillController {
 
     @PostMapping("doSeckill")
     public Result<Void> doSeckill(@RequestParam long goodsId) {
-        QueueMsg msg = new QueueMsg(null, goodsId);
+        User user = LoginInterceptor.getLoginUser();
+        QueueMsg msg = new QueueMsg(user, goodsId);
         rabbitTemplate.convertAndSend(JSON.toJSONString(msg));
 
         return Result.success(null);
