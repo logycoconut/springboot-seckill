@@ -83,9 +83,10 @@ public class TestDemo {
     @Test
     public void testRedis() {
 
-        this.redisService.set(SeckillKey.SOLD_OVER, String.valueOf(1225L), "见");
-        System.out.println(this.redisService.decr(SeckillKey.SOLD_OVER, String.valueOf(1225L)));
-//        Boolean flag = this.redisService.get(SeckillKey.SOLD_OVER, String.valueOf(1223L), Boolean.class);
-//        System.out.println(flag);
+//        this.redisService.set(SeckillKey.SOLD_OVER, String.valueOf(1225L), "见");
+//        System.out.println(this.redisService.decr(SeckillKey.SOLD_OVER, String.valueOf(1225L)));
+        String flag = this.redisService.get(SeckillKey.SOLD_OVER, String.valueOf(12323423L), String.class);
+        System.out.println(flag);
     }
+
 }

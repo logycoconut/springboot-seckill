@@ -20,8 +20,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //TODO 拦截静态资源存在问题
-        registry.addInterceptor(loginInterceptor()).addPathPatterns("/**");
-//                .excludePathPatterns("/", "/user/**", "classpath:/**");
+        registry.addInterceptor(loginInterceptor()).addPathPatterns("/**")
+                .excludePathPatterns("/", "/user/**", "/**/*.js", "/**/*.css");
     }
 }

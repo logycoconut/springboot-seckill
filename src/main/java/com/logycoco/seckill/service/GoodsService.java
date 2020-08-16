@@ -4,7 +4,6 @@ import com.logycoco.seckill.mapper.GoodsMapper;
 import com.logycoco.seckill.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

@@ -3,10 +3,10 @@ package com.logycoco.seckill.service;
 import com.logycoco.seckill.enity.OrderInfo;
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.mapper.OrderMapper;
+import com.logycoco.seckill.prefix.OrderKey;
 import com.logycoco.seckill.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -20,13 +20,15 @@ public class OrderService {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
+    private RedisService redisService;
+
     /**
      * 创建订单
      * @param user 当前用户
      * @param goods 商品信息
-     *              return
      */
-    public OrderInfo createOrder(User user, GoodsVo goods) {
+    public void createOrder(User user, GoodsVo goods) {
         OrderInfo orderInfo = OrderInfo.builder()
                 .userId(user.getId())
                 .goodsId(goods.getId())
@@ -40,7 +42,18 @@ public class OrderService {
 
         this.orderMapper.insert(orderInfo);
 
-        return orderInfo;
+        this.redisService.set(OrderKey.SECKILL_ORDER,
+                "" + orderInfo.getUserId() + "_" + orderInfo.getGoodsId(), "orderExist");
+    }
+
+    /**
+     * 判断重复下单
+     * @param userId 用户Id
+     * @param goodsId 商品Id
+     * @return 如果存在返回true
+     */
+    public Boolean getOrderInfoByUserIdAndGoodsId(long userId, long goodsId) {
+       return  null != this.redisService.get(OrderKey.SECKILL_ORDER, "" + userId + goodsId, String.class);
     }
 
 }
