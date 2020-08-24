@@ -16,6 +16,7 @@ public class CodeMsg {
     private String msg;
 
     public static final CodeMsg BAD_REQUEST = new CodeMsg(400, "错误请求");
+    public static final CodeMsg ERROR_URL = new CodeMsg(400001, "错误请求地址");
     public static final CodeMsg FORBIDDEN = new CodeMsg(403, "请求已被拒绝");
     public static final CodeMsg INTERNAL_SERVER_ERROR = new CodeMsg(500, "服务器异常");
     public static final CodeMsg KEY_INIT_ERROR = new CodeMsg(500001, "密钥对初始化异常");

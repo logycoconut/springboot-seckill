@@ -2,8 +2,10 @@ package com.logycoco.seckill.service;
 
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.prefix.SeckillKey;
+import com.logycoco.seckill.utils.CodecUtils;
 import com.logycoco.seckill.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,9 @@ public class SecKillService {
     @Autowired
     private RedisService redisService;
 
+    @Value("${seckill.url.salt}")
+    private String urlSalt;
+
     /**
      * 减少库存并且创建订单
      *
@@ -38,6 +43,15 @@ public class SecKillService {
             // 标记商品售空
             this.redisService.set(SeckillKey.SOLD_OVER, String.valueOf(goods.getId()), true);
         }
+    }
+
+    /**
+     * 生成随机URL值
+     * @param goodsId 商品Id
+     * @return URL
+     */
+    public String generateUrl(long goodsId) {
+        return CodecUtils.md5Hex("" + goodsId, urlSalt);
     }
 
 }

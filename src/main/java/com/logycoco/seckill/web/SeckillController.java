@@ -13,14 +13,13 @@ import com.logycoco.seckill.response.Result;
 import com.logycoco.seckill.service.GoodsService;
 import com.logycoco.seckill.service.OrderService;
 import com.logycoco.seckill.service.RedisService;
+import com.logycoco.seckill.service.SecKillService;
+import com.logycoco.seckill.utils.CodecUtils;
 import com.logycoco.seckill.vo.GoodsVo;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +41,9 @@ public class SeckillController implements InitializingBean {
     private OrderService orderService;
 
     @Autowired
+    private SecKillService secKillService;
+
+    @Autowired
     private RedisService redisService;
 
     @Autowired
@@ -51,8 +53,19 @@ public class SeckillController implements InitializingBean {
 
     private final Map<Long, Boolean> localOverMap = new HashMap<>();
 
-    @PostMapping("doSeckill")
-    public Result<String> doSeckill(@RequestParam long goodsId) {
+    @GetMapping("{goodsId}/url")
+    public Result<String> getSeckillUrl(@PathVariable("goodsId") long goodsId) {
+        String url = secKillService.generateUrl(goodsId);
+        return Result.success(url);
+    }
+
+    @PostMapping("{md5}/doSeckill")
+    public Result<String> doSeckill(@RequestParam long goodsId, @PathVariable("md5") String md5Value) {
+        // 判断接口是否正确
+        if (!md5Value.equals(secKillService.generateUrl(goodsId))) {
+            return Result.error(CodeMsg.ERROR_URL);
+        }
+
         // 获取登录用户
         User user = LoginInterceptor.getLoginUser();
 

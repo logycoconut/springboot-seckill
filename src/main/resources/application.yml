@@ -26,3 +26,5 @@ seckill:
     expireTime: 2880  # 分钟
     cookieName: SK_TOKEN
     cookieTime: 86400  # 秒
+  url:
+    salt: iurlv*$+234
