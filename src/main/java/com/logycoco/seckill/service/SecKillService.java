@@ -47,11 +47,12 @@ public class SecKillService {
 
     /**
      * 生成随机URL值
+     * @param userId 用户Id
      * @param goodsId 商品Id
      * @return URL
      */
-    public String generateUrl(long goodsId) {
-        return CodecUtils.md5Hex("" + goodsId, urlSalt);
+    public String generateUrl(long userId, long goodsId) {
+        return CodecUtils.md5Hex("" + userId + goodsId, urlSalt);
     }
 
 }

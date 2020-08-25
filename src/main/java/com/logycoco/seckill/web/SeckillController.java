@@ -1,26 +1,29 @@
 package com.logycoco.seckill.web;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.google.common.util.concurrent.RateLimiter;
 import com.logycoco.seckill.dto.QueueMsg;
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.interceptor.LoginInterceptor;
+import com.logycoco.seckill.prefix.CodeKey;
 import com.logycoco.seckill.prefix.GoodsKey;
-import com.logycoco.seckill.prefix.OrderKey;
 import com.logycoco.seckill.response.CodeMsg;
 import com.logycoco.seckill.response.Result;
 import com.logycoco.seckill.service.GoodsService;
 import com.logycoco.seckill.service.OrderService;
 import com.logycoco.seckill.service.RedisService;
 import com.logycoco.seckill.service.SecKillService;
-import com.logycoco.seckill.utils.CodecUtils;
+import com.logycoco.seckill.utils.ImageUtils;
 import com.logycoco.seckill.vo.GoodsVo;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,21 +56,43 @@ public class SeckillController implements InitializingBean {
 
     private final Map<Long, Boolean> localOverMap = new HashMap<>();
 
+    /**
+     * 获取秒杀链接
+     *
+     * @param goodsId 商品Id
+     * @return 秒杀链接
+     */
     @GetMapping("{goodsId}/url")
-    public Result<String> getSeckillUrl(@PathVariable("goodsId") long goodsId) {
-        String url = secKillService.generateUrl(goodsId);
+    public Result<String> getSeckillUrl(@PathVariable("goodsId") long goodsId, @RequestParam(defaultValue = "0") String verifyCode) {
+        // 获取登录用户
+        User user = LoginInterceptor.getLoginUser();
+
+        //验证码校验
+        boolean check = verifyCode.equals(redisService.get(CodeKey.VERIFY_CODE, "" + user.getId() + goodsId, String.class));
+        if (!check) {
+            return Result.error(CodeMsg.ERROR_CODE);
+        }
+
+        String url = secKillService.generateUrl(user.getId(), goodsId);
         return Result.success(url);
     }
 
+    /**
+     * 秒杀
+     *
+     * @param goodsId  商品Id
+     * @param md5Value 随机md5值
+     * @return 秒杀结果
+     */
     @PostMapping("{md5}/doSeckill")
-    public Result<String> doSeckill(@RequestParam long goodsId, @PathVariable("md5") String md5Value) {
-        // 判断接口是否正确
-        if (!md5Value.equals(secKillService.generateUrl(goodsId))) {
-            return Result.error(CodeMsg.ERROR_URL);
-        }
-
+    public Result<String> doSeckill(@PathVariable("md5") String md5Value, @RequestParam long goodsId) {
         // 获取登录用户
         User user = LoginInterceptor.getLoginUser();
+
+        // 判断接口是否正确
+        if (!md5Value.equals(secKillService.generateUrl(user.getId(), goodsId))) {
+            return Result.error(CodeMsg.ERROR_URL);
+        }
 
         // 均匀的放行请求
         if (!limiter.tryAcquire(1000, TimeUnit.SECONDS)) {
@@ -101,6 +126,32 @@ public class SeckillController implements InitializingBean {
     }
 
     /**
+     * 获取验证码
+     *
+     * @param goodsId 商品Id
+     * @return 成功
+     */
+    @GetMapping(value = "verifyCode", produces = "image/jpg")
+    public Result<Void> getVerifyCode(@RequestParam long goodsId, HttpServletResponse response) {
+        // 获取登录用户
+        User user = LoginInterceptor.getLoginUser();
+        String verifyCode = ImageUtils.generateVerifyCode(4);
+
+        // 将验证码存入redis中
+        this.redisService.set(CodeKey.VERIFY_CODE, "" + user.getId() + goodsId, verifyCode);
+
+        //
+        BufferedImage bufferedImage = ImageUtils.createVerifyCodeImage(verifyCode);
+        try (OutputStream out = response.getOutputStream()) {
+            ImageIO.write(bufferedImage, "JPEG", out);
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Result.success(null);
+    }
+
+    /**
      * 将秒杀数据都放入redis中
      *
      * @throws Exception 不可预期的异常
@@ -117,4 +168,5 @@ public class SeckillController implements InitializingBean {
             localOverMap.put(goodsVo.getId(), false);
         });
     }
+
 }
