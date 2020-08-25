@@ -16,6 +16,7 @@ public class Result<T> {
 
     /**
      * 返回成功结果
+     *
      * @param data 数据
      * @return 结果对象
      */
@@ -25,6 +26,7 @@ public class Result<T> {
 
     /**
      * 返回错误代码
+     *
      * @param codeMsg 错误信息
      * @return 错误信息
      */

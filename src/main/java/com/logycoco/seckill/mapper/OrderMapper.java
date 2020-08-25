@@ -9,6 +9,4 @@ import com.logycoco.seckill.enity.OrderInfo;
  */
 public interface OrderMapper extends BaseMapper<OrderInfo> {
 
-
-
 }

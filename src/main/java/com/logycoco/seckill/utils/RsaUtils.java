@@ -66,11 +66,12 @@ public class RsaUtils {
 
     /**
      * 获取公钥
+     *
      * @param fileName 文件全路径
      * @return 公钥
      * @throws NoSuchAlgorithmException 算法名称错误
-     * @throws InvalidKeySpecException 密钥格式不规范
-     * @throws IOException IO异常
+     * @throws InvalidKeySpecException  密钥格式不规范
+     * @throws IOException              IO异常
      */
     public static PublicKey getPublicKey(String fileName) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
         byte[] bytes = readFile(fileName);
@@ -80,11 +81,12 @@ public class RsaUtils {
 
     /**
      * 获取私钥
+     *
      * @param fileName 文件全路径
      * @return 私钥
      * @throws NoSuchAlgorithmException 算法名称错误
-     * @throws InvalidKeySpecException 密钥格式不规范
-     * @throws IOException IO异常
+     * @throws InvalidKeySpecException  密钥格式不规范
+     * @throws IOException              IO异常
      */
     public static PrivateKey getPrivateKey(String fileName) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
         byte[] bytes = readFile(fileName);

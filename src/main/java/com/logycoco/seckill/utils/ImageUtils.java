@@ -13,13 +13,13 @@ public class ImageUtils {
     /**
      * 0-9 a-Z
      */
-    private static char[] letters = new char[]
+    private static final char[] LETTERS = new char[]
             {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-            'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-            'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+                    'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+                    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     private ImageUtils() {
         throw new IllegalStateException("这是一个工具类");
@@ -48,10 +48,9 @@ public class ImageUtils {
         g.drawRect(0, 0, width - 1, height - 1);
 
         // 生成干扰点
-        Random random = new Random();
         for (int i = 0; i < 50; i++) {
-            int x = random.nextInt(width);
-            int y = random.nextInt(height);
+            int x = RANDOM.nextInt(width);
+            int y = RANDOM.nextInt(height);
             g.drawOval(x, y, 0, 0);
         }
 
@@ -66,15 +65,16 @@ public class ImageUtils {
 
     /**
      * 生成验证码
+     *
      * @param codeLength 要生成的验证码长度
      * @return 验证码
      */
     public static String generateVerifyCode(int codeLength) {
-        int length = letters.length;
+        int length = LETTERS.length;
         StringBuilder buffer = new StringBuilder();
 
         for (int i = 0; i < codeLength; i++) {
-            buffer.append(letters[random.nextInt(length)]);
+            buffer.append(LETTERS[RANDOM.nextInt(length)]);
         }
 
         return buffer.toString();

@@ -25,7 +25,8 @@ public class OrderService {
 
     /**
      * 创建订单
-     * @param user 当前用户
+     *
+     * @param user  当前用户
      * @param goods 商品信息
      */
     public void createOrder(User user, GoodsVo goods) {
@@ -48,12 +49,13 @@ public class OrderService {
 
     /**
      * 判断重复下单
-     * @param userId 用户Id
+     *
+     * @param userId  用户Id
      * @param goodsId 商品Id
      * @return 如果存在返回true
      */
     public Boolean getOrderInfoByUserIdAndGoodsId(long userId, long goodsId) {
-       return  null != this.redisService.get(OrderKey.SECKILL_ORDER, "" + userId + goodsId, String.class);
+        return null != this.redisService.get(OrderKey.SECKILL_ORDER, "" + userId + goodsId, String.class);
     }
 
 }

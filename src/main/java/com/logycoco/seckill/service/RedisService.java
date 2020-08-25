@@ -97,7 +97,8 @@ public class RedisService {
      */
     public Long decr(KeyPrefix prefix, String key) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
-        String realKey = prefix.getPrefix() + ":" + key;        try {
+        String realKey = prefix.getPrefix() + ":" + key;
+        try {
             return operations.decrement(realKey);
         } catch (Exception e) {
             throw new GlobalException(CodeMsg.REDIS_TYPE_ERROR);

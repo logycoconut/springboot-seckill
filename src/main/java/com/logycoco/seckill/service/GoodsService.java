@@ -30,6 +30,7 @@ public class GoodsService {
 
     /**
      * 根据商品Id获取商品VO
+     *
      * @param goodsId 商品Id
      * @return 商品VO
      */
@@ -39,6 +40,7 @@ public class GoodsService {
 
     /**
      * 将商品库存减一
+     *
      * @param goodsId 商品Id
      * @return 操作结果
      */

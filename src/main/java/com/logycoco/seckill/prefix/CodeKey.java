@@ -1,8 +1,8 @@
 package com.logycoco.seckill.prefix;
 
 /**
- * @description 验证码
  * @author hall
+ * @description 验证码
  * @date 2020-08-16 14:20
  */
 public class CodeKey extends BasePrefix {

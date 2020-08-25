@@ -1,8 +1,8 @@
 package com.logycoco.seckill.prefix;
 
 /**
- * @description 商品前缀
  * @author hall
+ * @description 商品前缀
  * @date 2020-08-16 14:20
  */
 public class GoodsKey extends BasePrefix {

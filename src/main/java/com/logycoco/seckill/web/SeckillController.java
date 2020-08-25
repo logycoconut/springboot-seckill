@@ -62,8 +62,8 @@ public class SeckillController implements InitializingBean {
      * @param goodsId 商品Id
      * @return 秒杀链接
      */
-    @GetMapping("{goodsId}/url")
-    public Result<String> getSeckillUrl(@PathVariable("goodsId") long goodsId, @RequestParam(defaultValue = "0") String verifyCode) {
+    @GetMapping("url")
+    public Result<String> getSeckillUrl(@RequestParam long goodsId, @RequestParam(defaultValue = "0") String verifyCode) {
         // 获取登录用户
         User user = LoginInterceptor.getLoginUser();
 
@@ -105,11 +105,15 @@ public class SeckillController implements InitializingBean {
             return Result.error(CodeMsg.SECKILL_OVER);
         }
 
-        // 预减库存
+        // 预减库存, 重新缓存并二次预减的原因是卖光商品
         long stock = this.redisService.decr(GoodsKey.GOODS_STOCK, "" + goodsId);
         if (stock < 0) {
-            localOverMap.put(goodsId, true);
-            return Result.error(CodeMsg.SECKILL_OVER);
+            afterPropertiesSet();
+            long resetStock = this.redisService.decr(GoodsKey.GOODS_STOCK, "" + goodsId);
+            if (resetStock < 0) {
+                localOverMap.put(goodsId, true);
+                return Result.error(CodeMsg.SECKILL_OVER);
+            }
         }
 
         // 判断重复秒杀
@@ -153,20 +157,24 @@ public class SeckillController implements InitializingBean {
 
     /**
      * 将秒杀数据都放入redis中
-     *
-     * @throws Exception 不可预期的异常
      */
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         List<GoodsVo> goodsVos = this.goodsService.listGoodsVo();
         if (goodsVos == null) {
             return;
         }
         goodsVos.forEach(goodsVo -> {
             this.redisService.set(GoodsKey.GOODS_STOCK, "" + goodsVo.getId(), goodsVo.getStockCount());
-            //初始化商品都是没有处理过的
+            // 初始化商品都是没有处理过的
             localOverMap.put(goodsVo.getId(), false);
         });
     }
+
+    public Result<Long> result() {
+        //TODO
+        return Result.success(null);
+    }
+
 
 }

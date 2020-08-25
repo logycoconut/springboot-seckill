@@ -8,12 +8,14 @@ public interface KeyPrefix {
 
     /**
      * 获取前缀
+     *
      * @return 前缀
      */
     String getPrefix();
 
     /**
      * 获取过期时间
+     *
      * @return 过期时间
      */
     int getExpireSeconds();

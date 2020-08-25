@@ -6,10 +6,12 @@ import com.logycoco.seckill.service.RedisService;
 import com.logycoco.seckill.vo.GoodsVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
@@ -34,6 +36,9 @@ public class GoodsController {
     @Autowired
     private ThymeleafViewResolver thymeleafViewResolver;
 
+    /**
+     * 返回列表页
+     */
     @GetMapping(value = "list", produces = "text/html")
     public String list(HttpServletRequest request, HttpServletResponse response, Model model) {
         // 从缓存中取出列表页
@@ -53,8 +58,11 @@ public class GoodsController {
         return listHtml;
     }
 
+    /**
+     * 返回详情页
+     */
     @GetMapping("detail/{id}")
-    public String list(@PathVariable("id") String goodsId, HttpServletRequest request, HttpServletResponse response, Model model) {
+    public String detail(@PathVariable("id") String goodsId, HttpServletRequest request, HttpServletResponse response, Model model) {
         // 从缓存中取出列表页
         String detailHtml = this.redisService.get(GoodsKey.GOODS_DETAIL, goodsId, String.class);
         if (!StringUtils.isEmpty(detailHtml)) {
@@ -88,7 +96,7 @@ public class GoodsController {
             this.redisService.set(GoodsKey.GOODS_DETAIL, goodsId, detailHtml);
         }
 
-        return "goods_detail";
+        return detailHtml;
     }
 
 }

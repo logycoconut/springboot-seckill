@@ -47,7 +47,8 @@ public class SecKillService {
 
     /**
      * 生成随机URL值
-     * @param userId 用户Id
+     *
+     * @param userId  用户Id
      * @param goodsId 商品Id
      * @return URL
      */

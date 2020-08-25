@@ -43,6 +43,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     /**
      * 取出线程域中的user
+     *
      * @return user
      */
     public static User getLoginUser() {

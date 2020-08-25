@@ -47,11 +47,10 @@
                                                           th:text="${remainSeconds}"></span>秒</span>
             </td>
             <td>
-                <form id="seckillForm" method="post" action="/seckill/doSeckill">
-                    <button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>
-                    <input type="hidden" name="goodsId" th:value="${goods.id}"/>
-                </form>
+                <button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>
+                <input type="hidden" name="goodsId"  id="goodsId" th:value="${goods.id}"/>
             </td>
+
         </tr>
         <tr>
             <td>商品原价</td>
@@ -70,7 +69,17 @@
 </body>
 <script>
     $(function () {
-        // countDown();
+        $("#buyButton").on('click', function(){
+            layer.prompt(
+                {
+                    // title: "请输入验证码 : "
+                    title: "<img src=\"/seckill/verifyCode?goodsId=1\"/>"
+                }, function(val, index){
+                    getSeckillUrl();
+                    layer.msg('秒杀');
+                    layer.close(index);
+            });
+        })
     });
 
     function countDown() {
@@ -93,6 +102,67 @@
 //            $("#buyButton").attr("disabled", true);
             $("#seckillTip").html("秒杀已经结束");
         }
+    }
+
+
+
+    function getSeckillUrl() {
+        $.ajax({
+            url: "/seckill/url",
+            type: "GET",
+            data: {
+                goodsId: $("#goodsId").val(),
+                verifyCode: $("#verifyCode").val()
+            },
+            success: function (data) {
+                if (data.code === 200) {
+                    // 验证码正确, 进行秒杀操作
+                    doSeckill(data.data)
+                } else {
+                    layer.msg(data.message)
+                }
+            }
+        })
+    }
+
+    function doSeckill(path) {
+        $.ajax({
+            url: "/seckill/" + path + "/doSeckill",
+            type: "POST",
+            data: {
+                goodsId: $("#goodsId").val()
+            },
+
+            success: function (data) {
+                if (data.code === 200) {//成功 就跳转 订单页面 并传入 orderid
+                    // window.location.href= "/order_detail.htm?orderId="+data.data.id;
+                    //若果返回成功,即表示收到请求，等待中
+                    getMiaoshaResult($("#goodsId").val());
+                } else {
+                    layer.msg(data.message)
+                }
+            }
+        })
+    }
+
+    function getVerifyCode() {
+        $.ajax({
+            url: "/seckill/verifyCode",
+            type: "GET",
+            data: {
+                goodsId: $("#goodsId").val()
+            },
+
+            success: function (data) {
+                if (data.code === 200) {//成功 就跳转 订单页面 并传入 orderid
+                    // window.location.href= "/order_detail.htm?orderId="+data.data.id;
+                    //若果返回成功,即表示收到请求，等待中
+                    getMiaoshaResult($("#goodsId").val());
+                } else {
+                    layer.msg(data.message)
+                }
+            }
+        })
     }
 
 </script>
