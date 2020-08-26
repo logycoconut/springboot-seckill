@@ -5,24 +5,22 @@ spring:
     cache: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.96.146.241:3307/seckill?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://127.0.0.1:3307/seckill?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: mysql
   redis:
-    host: 47.96.146.241
+    host: 127.0.0.1
     port: 6380
   rabbitmq:
-    host: 47.96.146.241
+    host: 127.0.0.1
     port: 5673
     virtual-host: /
     template:
       exchange: seckill.order.exchange
 seckill:
   jwt:
-#    pubKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pub
-#    priKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pri
-    pubKeyPath: D:\Workspace\seckill\src\main\resources\rsa\rsa.pub
-    priKeyPath: D:\Workspace\seckill\src\main\resources\rsa\rsa.pri
+    pubKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pub
+    priKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pri
     expireTime: 2880  # 分钟
     cookieName: SK_TOKEN
     cookieTime: 86400  # 秒

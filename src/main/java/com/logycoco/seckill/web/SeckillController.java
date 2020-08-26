@@ -52,27 +52,6 @@ public class SeckillController implements InitializingBean {
     private AmqpTemplate rabbitTemplate;
 
     /**
-     * 获取秒杀链接
-     *
-     * @param goodsId 商品Id
-     * @return 秒杀链接
-     */
-    @GetMapping("url")
-    public Result<String> getSeckillUrl(@RequestParam long goodsId, @RequestParam(defaultValue = "0") String verifyCode) {
-        // 获取登录用户
-        User user = LoginInterceptor.getLoginUser();
-
-        //验证码校验
-        boolean check = verifyCode.equalsIgnoreCase(redisService.get(CodeKey.VERIFY_CODE, "" + user.getId() + goodsId, String.class));
-        if (!check) {
-            return Result.error(CodeMsg.ERROR_CODE);
-        }
-
-        String url = secKillService.generateUrl(user.getId(), goodsId);
-        return Result.success(url);
-    }
-
-    /**
      * 秒杀
      *
      * @param goodsId  商品Id
@@ -83,7 +62,7 @@ public class SeckillController implements InitializingBean {
     public Result<String> doSeckill(@PathVariable("md5") String md5Value, @RequestParam long goodsId) {
         // 获取登录用户
         User user = LoginInterceptor.getLoginUser();
-
+/**
         // 判断接口是否正确
         if (!md5Value.equals(secKillService.generateUrl(user.getId(), goodsId))) {
             return Result.error(CodeMsg.ERROR_URL);
@@ -119,7 +98,7 @@ public class SeckillController implements InitializingBean {
 
         // 入队
         QueueMsg msg = new QueueMsg(user, goodsId);
-        rabbitTemplate.convertAndSend(JSON.toJSONString(msg));
+        rabbitTemplate.convertAndSend(JSON.toJSONString(msg)); **/
 
         return Result.success("秒杀成功");
     }
@@ -147,6 +126,26 @@ public class SeckillController implements InitializingBean {
     }
 
     /**
+     * 获取秒杀链接
+     *
+     * @param goodsId 商品Id
+     * @return 秒杀链接
+     */
+    @GetMapping("url")
+    public Result<String> getSeckillUrl(@RequestParam long goodsId, @RequestParam(defaultValue = "0") String verifyCode) {
+        // 获取登录用户
+        User user = LoginInterceptor.getLoginUser();
+
+//        //验证码校验
+//        boolean check = verifyCode.equalsIgnoreCase(redisService.get(CodeKey.VERIFY_CODE, "" + user.getId() + goodsId, String.class));
+//        if (!check) {
+//            return Result.error(CodeMsg.ERROR_CODE);
+//        }
+
+        String url = secKillService.generateUrl(user.getId(), goodsId);
+        return Result.success(url);
+    }
+    /**
      * 将秒杀数据都放入redis中
      */
     @Override
@@ -165,11 +164,14 @@ public class SeckillController implements InitializingBean {
     /**
      * 获取订单Id
      */
-    public Result<Long> result(@RequestParam long goodsId) {
+    @GetMapping("result")
+    public Result<String> result(@RequestParam long goodsId) {
         // 获取登录用户
         User user = LoginInterceptor.getLoginUser();
-        OrderInfo orderInfo = this.orderService.getOrderInfoByUserIdAndGoodsId(user.getId(), goodsId);
-        return Result.success(orderInfo.getId());
+
+        // long型传到前端有精度丢失
+        String result = "" + this.secKillService.getSeckillResult(user.getId(), goodsId);
+        return Result.success(result);
     }
 
 }

@@ -1,8 +1,10 @@
 package com.logycoco.seckill.web;
 
 import com.logycoco.seckill.prefix.GoodsKey;
+import com.logycoco.seckill.response.Result;
 import com.logycoco.seckill.service.GoodsService;
 import com.logycoco.seckill.service.RedisService;
+import com.logycoco.seckill.vo.GoodsDetailVo;
 import com.logycoco.seckill.vo.GoodsVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,17 +64,11 @@ public class GoodsController {
      * 返回详情页
      */
     @GetMapping("detail/{id}")
-    public String detail(@PathVariable("id") String goodsId, HttpServletRequest request, HttpServletResponse response, Model model) {
-        // 从缓存中取出列表页
-        String detailHtml = this.redisService.get(GoodsKey.GOODS_DETAIL, goodsId, String.class);
-        if (!StringUtils.isEmpty(detailHtml)) {
-            return detailHtml;
-        }
+    public Result<GoodsDetailVo> detail(@PathVariable("id") String goodsId) {
 
-        // 手动渲染页面
         GoodsVo goodsVo = this.goodsService.getGoodsVo(Long.parseLong(goodsId));
-        model.addAttribute("goods", goodsVo);
-        //remainSeconds seckillStatus
+
+        // 计算剩余时间和状态
         int remainSeconds = 0;
         int seckillStatus = 0;
         long startTime = goodsVo.getStartDate().getTime();
@@ -87,16 +83,12 @@ public class GoodsController {
             seckillStatus = 1;
         }
 
-        model.addAttribute("remainSeconds", remainSeconds);
-        model.addAttribute("seckillStatus", seckillStatus);
+        GoodsDetailVo goodsDetailVo = GoodsDetailVo.builder()
+                .goods(goodsVo)
+                .remainSeconds(remainSeconds)
+                .seckillStatus(seckillStatus).build();
 
-        WebContext ctx = new WebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap());
-        detailHtml = thymeleafViewResolver.getTemplateEngine().process("goods_detail", ctx);
-        if (!StringUtils.isEmpty(detailHtml)) {
-            this.redisService.set(GoodsKey.GOODS_DETAIL, goodsId, detailHtml);
-        }
-
-        return detailHtml;
+        return Result.success(goodsDetailVo);
     }
 
 }

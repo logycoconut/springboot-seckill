@@ -31,3 +31,12 @@ Date.prototype.format = function (format) {
     return format;
 };
 
+// 展示错误代码
+function showErrorMsg(message){
+    layer.msg(message, {icon: 2, time: 1000, anim: 5});
+}
+
+// 利用定时器sleep
+function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}

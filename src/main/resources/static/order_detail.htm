@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="zh-CN">
 <head>
     <title>订单详情</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -82,7 +82,7 @@
     function getOrderDetail(){
         const orderId = g_getQueryString("orderId");
         $.ajax({
-            url:"/order/detail" + orderId,
+            url:"/order/detail/" + orderId,
             type:"GET",
             data:{},
             success:function(data){

@@ -68,8 +68,8 @@ public class OrderService {
      */
     public OrderInfo getOrderInfoByUserIdAndGoodsId(long userId, long goodsId) {
         QueryWrapper<OrderInfo> wrapper = new QueryWrapper<>();
-        wrapper.eq("userId", userId)
-                .eq("goodsId", goodsId);
+        wrapper.eq("user_id", userId)
+                .eq("goods_id", goodsId);
         return this.orderMapper.selectOne(wrapper);
     }
 
