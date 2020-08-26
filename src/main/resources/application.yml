@@ -19,10 +19,10 @@ spring:
       exchange: seckill.order.exchange
 seckill:
   jwt:
-    pubKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pub
-    priKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pri
-#    pubKeyPath: D:\Workspace\seckill\src\main\resources\rsa\rsa.pub
-#    priKeyPath: D:\Workspace\seckill\src\main\resources\rsa\rsa.pri
+#    pubKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pub
+#    priKeyPath: /Users/hall/Documents/WorkSpace/seckill/src/main/resources/rsa/rsa.pri
+    pubKeyPath: D:\Workspace\seckill\src\main\resources\rsa\rsa.pub
+    priKeyPath: D:\Workspace\seckill\src\main\resources\rsa\rsa.pri
     expireTime: 2880  # 分钟
     cookieName: SK_TOKEN
     cookieTime: 86400  # 秒

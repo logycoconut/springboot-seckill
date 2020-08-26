@@ -3,6 +3,7 @@ package com.logycoco.seckill.web;
 import com.alibaba.fastjson.JSON;
 import com.google.common.util.concurrent.RateLimiter;
 import com.logycoco.seckill.dto.QueueMsg;
+import com.logycoco.seckill.enity.OrderInfo;
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.interceptor.LoginInterceptor;
 import com.logycoco.seckill.prefix.CodeKey;
@@ -37,24 +38,18 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("seckill")
 public class SeckillController implements InitializingBean {
 
+    private final RateLimiter limiter = RateLimiter.create(10);
+    private final Map<Long, Boolean> localOverMap = new HashMap<>();
     @Autowired
     private GoodsService goodsService;
-
     @Autowired
     private OrderService orderService;
-
     @Autowired
     private SecKillService secKillService;
-
     @Autowired
     private RedisService redisService;
-
     @Autowired
     private AmqpTemplate rabbitTemplate;
-
-    private final RateLimiter limiter = RateLimiter.create(10);
-
-    private final Map<Long, Boolean> localOverMap = new HashMap<>();
 
     /**
      * 获取秒杀链接
@@ -68,7 +63,7 @@ public class SeckillController implements InitializingBean {
         User user = LoginInterceptor.getLoginUser();
 
         //验证码校验
-        boolean check = verifyCode.equals(redisService.get(CodeKey.VERIFY_CODE, "" + user.getId() + goodsId, String.class));
+        boolean check = verifyCode.equalsIgnoreCase(redisService.get(CodeKey.VERIFY_CODE, "" + user.getId() + goodsId, String.class));
         if (!check) {
             return Result.error(CodeMsg.ERROR_CODE);
         }
@@ -117,7 +112,7 @@ public class SeckillController implements InitializingBean {
         }
 
         // 判断重复秒杀
-        boolean orderExist = this.orderService.getOrderInfoByUserIdAndGoodsId(user.getId(), goodsId);
+        boolean orderExist = this.orderService.getOrderInfoByUserIdAndGoodsIdInRedis(user.getId(), goodsId);
         if (orderExist) {
             return Result.error(CodeMsg.SECKILL_REPEAT);
         }
@@ -131,9 +126,6 @@ public class SeckillController implements InitializingBean {
 
     /**
      * 获取验证码
-     *
-     * @param goodsId 商品Id
-     * @return 成功
      */
     @GetMapping(value = "verifyCode", produces = "image/jpg")
     public Result<Void> getVerifyCode(@RequestParam long goodsId, HttpServletResponse response) {
@@ -144,7 +136,6 @@ public class SeckillController implements InitializingBean {
         // 将验证码存入redis中
         this.redisService.set(CodeKey.VERIFY_CODE, "" + user.getId() + goodsId, verifyCode);
 
-        //
         BufferedImage bufferedImage = ImageUtils.createVerifyCodeImage(verifyCode);
         try (OutputStream out = response.getOutputStream()) {
             ImageIO.write(bufferedImage, "JPEG", out);
@@ -171,10 +162,14 @@ public class SeckillController implements InitializingBean {
         });
     }
 
-    public Result<Long> result() {
-        //TODO
-        return Result.success(null);
+    /**
+     * 获取订单Id
+     */
+    public Result<Long> result(@RequestParam long goodsId) {
+        // 获取登录用户
+        User user = LoginInterceptor.getLoginUser();
+        OrderInfo orderInfo = this.orderService.getOrderInfoByUserIdAndGoodsId(user.getId(), goodsId);
+        return Result.success(orderInfo.getId());
     }
-
 
 }

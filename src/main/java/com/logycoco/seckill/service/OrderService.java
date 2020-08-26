@@ -1,5 +1,6 @@
 package com.logycoco.seckill.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.logycoco.seckill.enity.OrderInfo;
 import com.logycoco.seckill.enity.User;
 import com.logycoco.seckill.mapper.OrderMapper;
@@ -48,14 +49,37 @@ public class OrderService {
     }
 
     /**
-     * 判断重复下单
+     * 判断重复下单, 在redis中查询有无记录
      *
      * @param userId  用户Id
      * @param goodsId 商品Id
      * @return 如果存在返回true
      */
-    public Boolean getOrderInfoByUserIdAndGoodsId(long userId, long goodsId) {
+    public Boolean getOrderInfoByUserIdAndGoodsIdInRedis(long userId, long goodsId) {
         return null != this.redisService.get(OrderKey.SECKILL_ORDER, "" + userId + goodsId, String.class);
     }
 
+    /**
+     * 根据用户Id和商品Id查询订单
+     *
+     * @param userId  用户Id
+     * @param goodsId 商品Id
+     * @return 订单信息
+     */
+    public OrderInfo getOrderInfoByUserIdAndGoodsId(long userId, long goodsId) {
+        QueryWrapper<OrderInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("userId", userId)
+                .eq("goodsId", goodsId);
+        return this.orderMapper.selectOne(wrapper);
+    }
+
+    /**
+     * 根据订单Id查询订单
+     *
+     * @param orderId 订单Id
+     * @return 订单信息
+     */
+    public OrderInfo getOrderInfoById(long orderId) {
+        return this.orderMapper.selectById(orderId);
+    }
 }

@@ -68,16 +68,47 @@
 </div>
 </body>
 <script>
+
     $(function () {
         $("#buyButton").on('click', function(){
-            layer.prompt(
-                {
-                    // title: "请输入验证码 : "
-                    title: "<img src=\"/seckill/verifyCode?goodsId=1\"/>"
-                }, function(val, index){
-                    getSeckillUrl();
-                    layer.msg('秒杀');
-                    layer.close(index);
+            layer.prompt({
+                title: '请输入验证码(不区分大小写)',
+                formType: 0,
+                maxlength: 4,
+                offset: '200px',
+                success: function(layero, index){
+                    $('.layui-layer-content').append(`
+                        <br/>
+                        <div style="text-align: center">
+                            <img id="verifyImg" src="/seckill/verifyCode?goodsId=1" height="50" alt="verifyImg"/>
+                        </div>
+                    `);
+                    layero.on('click','#verifyImg',function(){
+                        let url=$(this).attr('src');
+                        $(this).attr('src',url + "&" + new Date().valueOf());
+                    });
+                }
+            }, function(value, index, elem){
+                $.ajax({
+                    url: "/seckill/url",
+                    type: "GET",
+                    data: {
+                        goodsId: $("#goodsId").val(),
+                        verifyCode: value
+                    },
+                    success: function (data) {
+                        if (data.code === 200) {
+                            // 验证码正确, 进行秒杀操作
+                            doSeckill(data.data);
+                            layer.close(index);
+                            layer.load(1, {
+                                shade: [0.5, '#fff']
+                            });
+                        } else {
+                            layer.msg(data.message, {icon: 2, time: 500, anim: 5});
+                        }
+                    }
+                });
             });
         })
     });
@@ -104,27 +135,6 @@
         }
     }
 
-
-
-    function getSeckillUrl() {
-        $.ajax({
-            url: "/seckill/url",
-            type: "GET",
-            data: {
-                goodsId: $("#goodsId").val(),
-                verifyCode: $("#verifyCode").val()
-            },
-            success: function (data) {
-                if (data.code === 200) {
-                    // 验证码正确, 进行秒杀操作
-                    doSeckill(data.data)
-                } else {
-                    layer.msg(data.message)
-                }
-            }
-        })
-    }
-
     function doSeckill(path) {
         $.ajax({
             url: "/seckill/" + path + "/doSeckill",
@@ -134,35 +144,30 @@
             },
 
             success: function (data) {
-                if (data.code === 200) {//成功 就跳转 订单页面 并传入 orderid
-                    // window.location.href= "/order_detail.htm?orderId="+data.data.id;
-                    //若果返回成功,即表示收到请求，等待中
-                    getMiaoshaResult($("#goodsId").val());
-                } else {
-                    layer.msg(data.message)
-                }
+                // 模拟等待过程, 其实大可不必
+                sleep(1000).then(() => {
+                    layer.closeAll('loading');
+                }).then(() => {
+                    if (data.code === 200) {
+                        // 关闭加载层, 并跳转到订单页
+                        layer.msg("秒杀成功, 即将跳转到订单页....", {
+                            icon: 2,
+                            time: 2000,
+                            anim: 5
+                        }, function () {
+                            window.location.href = "/order/detail/" + data.data;
+                        });
+                    } else {
+                        layer.msg(data.message, {icon: 2, time: 1000, anim: 5});
+                    }
+                });
+
             }
         })
     }
 
-    function getVerifyCode() {
-        $.ajax({
-            url: "/seckill/verifyCode",
-            type: "GET",
-            data: {
-                goodsId: $("#goodsId").val()
-            },
-
-            success: function (data) {
-                if (data.code === 200) {//成功 就跳转 订单页面 并传入 orderid
-                    // window.location.href= "/order_detail.htm?orderId="+data.data.id;
-                    //若果返回成功,即表示收到请求，等待中
-                    getMiaoshaResult($("#goodsId").val());
-                } else {
-                    layer.msg(data.message)
-                }
-            }
-        })
+    function sleep (time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
     }
 
 </script>

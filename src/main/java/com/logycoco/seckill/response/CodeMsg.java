@@ -27,5 +27,6 @@ public class CodeMsg {
     public static final CodeMsg ACCESS_LIMIT = new CodeMsg(500005, "访问高峰期, 请稍后访问");
     public static final CodeMsg SECKILL_OVER = new CodeMsg(500006, "商品已经秒杀完毕");
     public static final CodeMsg SECKILL_REPEAT = new CodeMsg(500007, "商品重复秒杀");
+    public static final CodeMsg ORDER_NOT_EXIST = new CodeMsg(500008, "订单不存在");
 
 }

@@ -48,11 +48,11 @@
         </tr>
         <tr>
             <td>收货人</td>
-            <td colspan="2">XXX  18812341234</td>
+            <td colspan="2">XXX  123456789</td>
         </tr>
         <tr>
             <td>收货地址</td>
-            <td colspan="2">北京市昌平区回龙观龙博一区</td>
+            <td colspan="2">XX省XX市XX区XXXX</td>
         </tr>
     </table>
 </div>
@@ -60,16 +60,16 @@
 </html>
 <script>
     function render(detail){
-        var goods = detail.goods;
-        var order = detail.order;
+        const goods = detail.goods;
+        const order = detail.order;
         $("#goodsName").text(goods.goodsName);
         $("#goodsImg").attr("src", goods.goodsImg);
         $("#orderPrice").text(order.goodsPrice);
         $("#createDate").text(new Date(order.createDate).format("yyyy-MM-dd hh:mm:ss"));
-        var status = "";
-        if(order.status == 0){
+        let status = "";
+        if(order.status === 0){
             status = "未支付"
-        }else if(order.status == 1){
+        }else if(order.status === 1){
             status = "待发货";
         }
         $("#orderStatus").text(status);
@@ -77,25 +77,20 @@
 
     $(function(){
         getOrderDetail();
-    })
+    });
 
     function getOrderDetail(){
-        var orderId = g_getQueryString("orderId");
+        const orderId = g_getQueryString("orderId");
         $.ajax({
-            url:"/order/detail",
+            url:"/order/detail" + orderId,
             type:"GET",
-            data:{
-                orderId:orderId
-            },
+            data:{},
             success:function(data){
-                if(data.code == 0){
+                if(data.code === 200){
                     render(data.data);
                 }else{
                     layer.msg(data.msg);
                 }
-            },
-            error:function(){
-                layer.msg("客户端请求有误");
             }
         });
     }

@@ -147,15 +147,12 @@
             url: "/goods/detail/" + goodsId,
             type: "GET",
             success: function (data) {
-                if (data.code == 0) {
+                if (data.code === 200) {
                     //将数据渲染出来
                     render(data.data);
                 } else {
                     layer.msg(data.msg);
                 }
-            },
-            error: function () {
-                layer.msg("客户端请求有误");
             }
         });
     }
