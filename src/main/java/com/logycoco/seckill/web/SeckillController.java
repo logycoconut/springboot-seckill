@@ -62,7 +62,7 @@ public class SeckillController implements InitializingBean {
     public Result<String> doSeckill(@PathVariable("md5") String md5Value, @RequestParam long goodsId) {
         // 获取登录用户
         User user = LoginInterceptor.getLoginUser();
-/**
+
         // 判断接口是否正确
         if (!md5Value.equals(secKillService.generateUrl(user.getId(), goodsId))) {
             return Result.error(CodeMsg.ERROR_URL);
@@ -98,7 +98,7 @@ public class SeckillController implements InitializingBean {
 
         // 入队
         QueueMsg msg = new QueueMsg(user, goodsId);
-        rabbitTemplate.convertAndSend(JSON.toJSONString(msg)); **/
+        rabbitTemplate.convertAndSend(JSON.toJSONString(msg));
 
         return Result.success("秒杀成功");
     }
@@ -136,11 +136,11 @@ public class SeckillController implements InitializingBean {
         // 获取登录用户
         User user = LoginInterceptor.getLoginUser();
 
-//        //验证码校验
-//        boolean check = verifyCode.equalsIgnoreCase(redisService.get(CodeKey.VERIFY_CODE, "" + user.getId() + goodsId, String.class));
-//        if (!check) {
-//            return Result.error(CodeMsg.ERROR_CODE);
-//        }
+        //验证码校验
+        boolean check = verifyCode.equalsIgnoreCase(redisService.get(CodeKey.VERIFY_CODE, "" + user.getId() + goodsId, String.class));
+        if (!check) {
+            return Result.error(CodeMsg.ERROR_CODE);
+        }
 
         String url = secKillService.generateUrl(user.getId(), goodsId);
         return Result.success(url);
